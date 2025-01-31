@@ -1,9 +1,12 @@
-export interface Workout {
-  id: string;
-  name: string;
+export interface UserWorkout {
   type: string;
   minutes: number;
-  date: string;
+}
+
+export interface UserData {
+  id: string;
+  name: string;
+  workouts: UserWorkout[];
 }
 
 export const workoutTypes = [

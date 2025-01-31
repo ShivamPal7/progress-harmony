@@ -2,11 +2,11 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { workoutTypes, type Workout } from "./WorkoutTypes";
+import { workoutTypes, type UserData, type UserWorkout } from "./WorkoutTypes";
 import { useToast } from "@/components/ui/use-toast";
 
 interface WorkoutFormProps {
-  onSubmit: (workout: Workout) => void;
+  onSubmit: (userData: UserData) => void;
 }
 
 export const WorkoutForm = ({ onSubmit }: WorkoutFormProps) => {
@@ -27,15 +27,18 @@ export const WorkoutForm = ({ onSubmit }: WorkoutFormProps) => {
       return;
     }
 
-    const workout: Workout = {
-      id: crypto.randomUUID(),
-      name,
+    const workout: UserWorkout = {
       type,
       minutes: parseInt(minutes),
-      date: new Date().toISOString(),
     };
 
-    onSubmit(workout);
+    const userData: UserData = {
+      id: crypto.randomUUID(),
+      name,
+      workouts: [workout],
+    };
+
+    onSubmit(userData);
     toast({
       title: "Success",
       description: "Workout added successfully!",
@@ -50,12 +53,12 @@ export const WorkoutForm = ({ onSubmit }: WorkoutFormProps) => {
   return (
     <form onSubmit={handleSubmit} className="space-y-4 p-6 bg-white rounded-lg shadow-md">
       <div className="space-y-2">
-        <label htmlFor="name" className="text-sm font-medium">Name</label>
+        <label htmlFor="name" className="text-sm font-medium">User Name</label>
         <Input
           id="name"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="Enter your name"
+          placeholder="Enter user name"
           className="w-full"
         />
       </div>
@@ -89,7 +92,7 @@ export const WorkoutForm = ({ onSubmit }: WorkoutFormProps) => {
         />
       </div>
 
-      <Button type="submit" className="w-full bg-blue-500 hover:bg-blue-600">
+      <Button type="submit" className="w-full">
         Add Workout
       </Button>
     </form>

@@ -2,34 +2,35 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { workoutTypes, type Workout } from "./WorkoutTypes";
+import { workoutTypes, type UserData } from "./WorkoutTypes";
 
 interface WorkoutListProps {
-  workouts: Workout[];
+  users: UserData[];
 }
 
-export const WorkoutList = ({ workouts }: WorkoutListProps) => {
+export const WorkoutList = ({ users }: WorkoutListProps) => {
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState<string>("all");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
-  const filteredWorkouts = workouts.filter((workout) => {
-    const matchesSearch = workout.name.toLowerCase().includes(search.toLowerCase());
-    const matchesType = typeFilter === "all" ? true : workout.type === typeFilter;
+  const filteredUsers = users.filter((user) => {
+    const matchesSearch = user.name.toLowerCase().includes(search.toLowerCase());
+    const matchesType = typeFilter === "all" 
+      ? true 
+      : user.workouts.some(workout => workout.type === typeFilter);
     return matchesSearch && matchesType;
   });
 
-  const totalPages = Math.ceil(filteredWorkouts.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const paginatedWorkouts = filteredWorkouts.slice(startIndex, startIndex + itemsPerPage);
+  const paginatedUsers = filteredUsers.slice(startIndex, startIndex + itemsPerPage);
 
   return (
     <div className="space-y-4">
       <div className="flex gap-4 mb-4">
         <Input
-          placeholder="Search by name..."
+          placeholder="Search by username..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="flex-1"
@@ -53,20 +54,20 @@ export const WorkoutList = ({ workouts }: WorkoutListProps) => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead>Type</TableHead>
+              <TableHead>User Name</TableHead>
+              <TableHead>Workout Type</TableHead>
               <TableHead>Duration (min)</TableHead>
-              <TableHead>Date</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {paginatedWorkouts.map((workout) => (
-              <TableRow key={workout.id}>
-                <TableCell>{workout.name}</TableCell>
-                <TableCell>{workout.type}</TableCell>
-                <TableCell>{workout.minutes}</TableCell>
-                <TableCell>{new Date(workout.date).toLocaleDateString()}</TableCell>
-              </TableRow>
+            {paginatedUsers.map((user) => (
+              user.workouts.map((workout, workoutIndex) => (
+                <TableRow key={`${user.id}-${workoutIndex}`}>
+                  <TableCell>{user.name}</TableCell>
+                  <TableCell>{workout.type}</TableCell>
+                  <TableCell>{workout.minutes}</TableCell>
+                </TableRow>
+              ))
             ))}
           </TableBody>
         </Table>

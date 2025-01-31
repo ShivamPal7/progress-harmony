@@ -1,14 +1,38 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { WorkoutForm } from "@/components/WorkoutTracker/WorkoutForm";
 import { WorkoutList } from "@/components/WorkoutTracker/WorkoutList";
 import { WorkoutChart } from "@/components/WorkoutTracker/WorkoutChart";
-import type { Workout } from "@/components/WorkoutTracker/WorkoutTypes";
+import type { UserData } from "@/components/WorkoutTracker/WorkoutTypes";
+
+const STORAGE_KEY = "healthChallengeUsers";
 
 const Index = () => {
-  const [workouts, setWorkouts] = useState<Workout[]>([]);
+  const [users, setUsers] = useState<UserData[]>(() => {
+    const savedUsers = localStorage.getItem(STORAGE_KEY);
+    return savedUsers ? JSON.parse(savedUsers) : [];
+  });
 
-  const handleAddWorkout = (workout: Workout) => {
-    setWorkouts((prev) => [...prev, workout]);
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(users));
+  }, [users]);
+
+  const handleAddWorkout = (userData: UserData) => {
+    setUsers((prevUsers) => {
+      const existingUserIndex = prevUsers.findIndex(user => user.name === userData.name);
+      
+      if (existingUserIndex >= 0) {
+        // Add workout to existing user
+        const updatedUsers = [...prevUsers];
+        updatedUsers[existingUserIndex] = {
+          ...updatedUsers[existingUserIndex],
+          workouts: [...updatedUsers[existingUserIndex].workouts, ...userData.workouts]
+        };
+        return updatedUsers;
+      } else {
+        // Add new user with workout
+        return [...prevUsers, userData];
+      }
+    });
   };
 
   return (
@@ -22,13 +46,21 @@ const Index = () => {
           <WorkoutForm onSubmit={handleAddWorkout} />
           <div className="bg-white rounded-lg shadow-md p-6">
             <h2 className="text-xl font-semibold mb-4">Workout Progress</h2>
-            <WorkoutChart workouts={workouts} />
+            <WorkoutChart workouts={users.flatMap(user => 
+              user.workouts.map(w => ({
+                id: user.id,
+                name: user.name,
+                type: w.type,
+                minutes: w.minutes,
+                date: new Date().toISOString()
+              }))
+            )} />
           </div>
         </div>
 
         <div className="bg-white rounded-lg shadow-md p-6">
           <h2 className="text-xl font-semibold mb-4">Workout History</h2>
-          <WorkoutList workouts={workouts} />
+          <WorkoutList users={users} />
         </div>
       </div>
     </div>
