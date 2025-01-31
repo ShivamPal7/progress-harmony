@@ -9,6 +9,14 @@ export interface UserData {
   workouts: UserWorkout[];
 }
 
+export interface Workout {
+  id: string;
+  name: string;
+  type: string;
+  minutes: number;
+  date: string;
+}
+
 export const workoutTypes = [
   "Running",
   "Cycling",
