@@ -6,10 +6,37 @@ import type { UserData } from "@/components/WorkoutTracker/WorkoutTypes";
 
 const STORAGE_KEY = "healthChallengeUsers";
 
+const initialUsers: UserData[] = [
+  {
+    id: "1",
+    name: "John Doe",
+    workouts: [
+      { type: "Running", minutes: 30 },
+      { type: "Cycling", minutes: 45 }
+    ]
+  },
+  {
+    id: "2",
+    name: "Jane Smith",
+    workouts: [
+      { type: "Swimming", minutes: 60 },
+      { type: "Running", minutes: 20 }
+    ]
+  },
+  {
+    id: "3",
+    name: "Mike Johnson",
+    workouts: [
+      { type: "Yoga", minutes: 50 },
+      { type: "Weight Training", minutes: 40 }
+    ]
+  }
+];
+
 const Index = () => {
   const [users, setUsers] = useState<UserData[]>(() => {
     const savedUsers = localStorage.getItem(STORAGE_KEY);
-    return savedUsers ? JSON.parse(savedUsers) : [];
+    return savedUsers ? JSON.parse(savedUsers) : initialUsers;
   });
 
   useEffect(() => {
