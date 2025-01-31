@@ -15,17 +15,21 @@ export const WorkoutList = ({ users }: WorkoutListProps) => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
-  const filteredUsers = users.filter((user) => {
-    const matchesSearch = user.name.toLowerCase().includes(search.toLowerCase());
-    const matchesType = typeFilter === "all" 
-      ? true 
-      : user.workouts.some(workout => workout.type === typeFilter);
-    return matchesSearch && matchesType;
-  });
+  // First filter users and their workouts
+  const filteredWorkouts = users.flatMap(user => 
+    user.workouts
+      .filter(workout => typeFilter === "all" || workout.type === typeFilter)
+      .map(workout => ({
+        userId: user.id,
+        userName: user.name,
+        ...workout
+      }))
+  ).filter(entry => entry.userName.toLowerCase().includes(search.toLowerCase()));
 
-  const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
+  // Then handle pagination
+  const totalPages = Math.ceil(filteredWorkouts.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const paginatedUsers = filteredUsers.slice(startIndex, startIndex + itemsPerPage);
+  const paginatedWorkouts = filteredWorkouts.slice(startIndex, startIndex + itemsPerPage);
 
   return (
     <div className="space-y-4">
@@ -61,14 +65,12 @@ export const WorkoutList = ({ users }: WorkoutListProps) => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {paginatedUsers.map((user) => (
-              user.workouts.map((workout, workoutIndex) => (
-                <TableRow key={`${user.id}-${workoutIndex}`}>
-                  <TableCell>{user.name}</TableCell>
-                  <TableCell>{workout.type}</TableCell>
-                  <TableCell>{workout.minutes}</TableCell>
-                </TableRow>
-              ))
+            {paginatedWorkouts.map((workout, index) => (
+              <TableRow key={`${workout.userId}-${index}`}>
+                <TableCell>{workout.userName}</TableCell>
+                <TableCell>{workout.type}</TableCell>
+                <TableCell>{workout.minutes}</TableCell>
+              </TableRow>
             ))}
           </TableBody>
         </Table>
