@@ -48,7 +48,6 @@ const Index = () => {
       const existingUserIndex = prevUsers.findIndex(user => user.name === userData.name);
       
       if (existingUserIndex >= 0) {
-        // Add workout to existing user
         const updatedUsers = [...prevUsers];
         updatedUsers[existingUserIndex] = {
           ...updatedUsers[existingUserIndex],
@@ -56,23 +55,24 @@ const Index = () => {
         };
         return updatedUsers;
       } else {
-        // Add new user with workout
         return [...prevUsers, userData];
       }
     });
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="container mx-auto px-4">
-        <h1 className="text-4xl font-bold text-center mb-8 text-gray-900">
+    <div className="min-h-screen bg-gray-50 py-12">
+      <div className="container mx-auto px-4 max-w-6xl">
+        <h1 className="text-4xl font-bold text-center mb-12 text-gray-900 animate-fade-in">
           Health Challenge Tracker
         </h1>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-          <WorkoutForm onSubmit={handleAddWorkout} />
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-semibold mb-4">Workout Progress</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+          <div className="transition-all duration-300 hover:translate-y-[-4px]">
+            <WorkoutForm onSubmit={handleAddWorkout} />
+          </div>
+          <div className="bg-white rounded-lg shadow-lg p-6 transition-all duration-300 hover:shadow-xl">
+            <h2 className="text-2xl font-semibold mb-6 text-gray-800">Workout Progress</h2>
             <WorkoutChart workouts={users.flatMap(user => 
               user.workouts.map(w => ({
                 id: user.id,
@@ -85,8 +85,8 @@ const Index = () => {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-semibold mb-4">Workout History</h2>
+        <div className="bg-white rounded-lg shadow-lg p-6 transition-all duration-300 hover:shadow-xl">
+          <h2 className="text-2xl font-semibold mb-6 text-gray-800">Workout History</h2>
           <WorkoutList users={users} />
         </div>
       </div>

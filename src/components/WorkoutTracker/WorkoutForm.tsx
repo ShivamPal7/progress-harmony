@@ -51,22 +51,24 @@ export const WorkoutForm = ({ onSubmit }: WorkoutFormProps) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 p-6 bg-white rounded-lg shadow-md">
+    <form onSubmit={handleSubmit} className="space-y-6 p-8 bg-white rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl">
+      <h2 className="text-2xl font-semibold mb-6 text-gray-800">Add New Workout</h2>
+      
       <div className="space-y-2">
-        <label htmlFor="name" className="text-sm font-medium">User Name</label>
+        <label htmlFor="name" className="text-sm font-medium text-gray-700">User Name</label>
         <Input
           id="name"
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="Enter user name"
-          className="w-full"
+          className="w-full transition-all duration-200 hover:border-primary focus:border-primary"
         />
       </div>
 
       <div className="space-y-2">
-        <label htmlFor="type" className="text-sm font-medium">Workout Type</label>
+        <label htmlFor="type" className="text-sm font-medium text-gray-700">Workout Type</label>
         <Select value={type} onValueChange={setType}>
-          <SelectTrigger>
+          <SelectTrigger className="w-full transition-all duration-200 hover:border-primary">
             <SelectValue placeholder="Select workout type" />
           </SelectTrigger>
           <SelectContent>
@@ -80,7 +82,7 @@ export const WorkoutForm = ({ onSubmit }: WorkoutFormProps) => {
       </div>
 
       <div className="space-y-2">
-        <label htmlFor="minutes" className="text-sm font-medium">Duration (minutes)</label>
+        <label htmlFor="minutes" className="text-sm font-medium text-gray-700">Duration (minutes)</label>
         <Input
           id="minutes"
           type="number"
@@ -88,11 +90,11 @@ export const WorkoutForm = ({ onSubmit }: WorkoutFormProps) => {
           onChange={(e) => setMinutes(e.target.value)}
           placeholder="Enter duration in minutes"
           min="1"
-          className="w-full"
+          className="w-full transition-all duration-200 hover:border-primary focus:border-primary"
         />
       </div>
 
-      <Button type="submit" className="w-full">
+      <Button type="submit" className="w-full transition-all duration-300 hover:scale-[1.02]">
         Add Workout
       </Button>
     </form>
