@@ -11,13 +11,13 @@ interface WorkoutListProps {
 
 export const WorkoutList = ({ workouts }: WorkoutListProps) => {
   const [search, setSearch] = useState("");
-  const [typeFilter, setTypeFilter] = useState<string>("");
+  const [typeFilter, setTypeFilter] = useState<string>("all");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
   const filteredWorkouts = workouts.filter((workout) => {
     const matchesSearch = workout.name.toLowerCase().includes(search.toLowerCase());
-    const matchesType = typeFilter ? workout.type === typeFilter : true;
+    const matchesType = typeFilter === "all" ? true : workout.type === typeFilter;
     return matchesSearch && matchesType;
   });
 
@@ -39,7 +39,7 @@ export const WorkoutList = ({ workouts }: WorkoutListProps) => {
             <SelectValue placeholder="Filter by type" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">All Types</SelectItem>
+            <SelectItem value="all">All Types</SelectItem>
             {workoutTypes.map((type) => (
               <SelectItem key={type} value={type}>
                 {type}
